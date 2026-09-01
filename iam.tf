@@ -21,7 +21,7 @@ resource "aws_iam_role" "terraform_role" {
           "token.actions.githubusercontent.com:aud" = ["sts.amazonaws.com"]
         }
         StringLike = {
-          "token.actions.githubusercontent.com:sub" = ["repo:GabrielRARodrigues@105179063/DevOps-NestAPI@1352926183:ref:refs/heads/main", "repo:GabrielRARodrigues@105179063/DevOps-NestAPI@1352926183:ref:refs/heads/main"]
+          "token.actions.githubusercontent.com:sub" = ["repo:GabrielRARodrigues@105179063/DevOps-NestAPI-Infra@1352926183:ref:refs/heads/main", "repo:GabrielRARodrigues@105179063/DevOps-NestAPI-Infra@1352926183:ref:refs/heads/main"]
         }
       }
       Effect = "Allow"
