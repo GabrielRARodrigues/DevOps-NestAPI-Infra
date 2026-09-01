@@ -38,6 +38,30 @@ resource "aws_iam_role" "terraform_role" {
   }
 }
 
+resource "aws_iam_role_policy" "terraform_permission_policy" {
+  name = "terraform_permission_policy"
+  role = aws_iam_role.terraform_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "Statement1"
+        Action   = "ecr:*"
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Sid      = "Statement2"
+        Action   = "iam:*"
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+
 resource "aws_iam_role" "ecr_role" {
   name = "ecr_role"
 
