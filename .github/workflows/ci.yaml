@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  run-terraform:
+    name: 'Run terraform'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          aws-region: ${{secrets.AWS_REGION}}
+          role-to-assume: ${{secrets.AWS_TERRAFORM_ROLE_ARN}}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4.0.1
+        with:
+          terraform_version: 1.16.0
+
+      - name: Run terraform init
+        run: terraform init
+
+      - name: Run terraform format
+        run: terraform fmt -check
+
+      - name: Run terraform plan
+        run: terraform plan
+
+      # - name: Run terraform apply
+      #   run: terraform apply

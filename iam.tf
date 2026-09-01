@@ -10,6 +10,34 @@ resource "aws_iam_openid_connect_provider" "oidc-github" {
   }
 }
 
+resource "aws_iam_role" "terraform_role" {
+  name = "terraform_role"
+
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" = ["sts.amazonaws.com"]
+        }
+        StringLike = {
+          "token.actions.githubusercontent.com:sub" = ["repo:GabrielRARodrigues@105179063/DevOps-NestAPI@1352926183:ref:refs/heads/main", "repo:GabrielRARodrigues@105179063/DevOps-NestAPI@1352926183:ref:refs/heads/main"]
+        }
+      }
+      Effect = "Allow"
+      Principal = {
+        Federated = aws_iam_openid_connect_provider.oidc-github.arn
+      }
+    }]
+    Version = "2012-10-17"
+    }
+  )
+
+  tags = {
+    IAC = "True"
+  }
+}
+
 resource "aws_iam_role" "ecr_role" {
   name = "ecr_role"
 
@@ -104,12 +132,4 @@ resource "aws_iam_role" "app_runner_role" {
 resource "aws_iam_role_policy_attachment" "app_runner_role_policy_attachment" {
   role       = aws_iam_role.app_runner_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}
-
-output "ecr_role_arn" {
-  value = aws_iam_role.ecr_role.arn
-}
-
-output "app_runner_role_arn" {
-  value = aws_iam_role.app_runner_role.arn
 }
