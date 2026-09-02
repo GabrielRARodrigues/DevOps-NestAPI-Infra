@@ -38,5 +38,6 @@ jobs:
       - name: Run terraform plan
         run: terraform plan
 
-      # - name: Run terraform apply
-      #   run: terraform apply
+      - name: Run terraform apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply
